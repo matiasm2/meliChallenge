@@ -5,10 +5,11 @@ import (
 	"database/sql"
 	"os"
 	"time"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
-	// Needed to sql lite 3
-	_ "github.com/mattn/go-sqlite3"
+	// Needed to mysql
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
@@ -29,8 +30,8 @@ func StartApp() {
 
 func configDataBase() *sql.DB {
 	os.Remove("./foo.db")
-	db, err := sql.Open("sqlite3", "./foo.db")
-	//db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", "user", "userpwd", "db", "db"))
+	//db, err := sql.Open("sqlite3", "./foo.db")
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", "user", "userpwd", "db", "db"))
 	if err != nil {
 		panic("Could not connect to the db")
 	} 
@@ -52,7 +53,7 @@ func createTable(db *sql.DB) {
 	// create table if not exists
 	sql_table := `
 	CREATE TABLE IF NOT EXISTS items(
-		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 		name TEXT,
 		description TEXT
 	);`

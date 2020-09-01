@@ -4,6 +4,7 @@ import (
 	"api/app/models"
 	"database/sql"
 	"strconv"
+	"errors"
 )
 
 // ItemService ...
@@ -70,7 +71,7 @@ func (s *ItemService) CreateItem(i *models.Item) error {
 
 // DeleteItem ...
 func (s *ItemService) DeleteItem(id string) error {
-	stmt, err := s.DB.Prepare(`DELETE FROM items WHERE id= ?; values(?)`)
+	stmt, err := s.DB.Prepare(`DELETE FROM items WHERE id= ?`)
 	if err != nil {
 		return err
 	}
@@ -82,8 +83,12 @@ func (s *ItemService) DeleteItem(id string) error {
 	}
 
 	rowAffected, err := res.RowsAffected()
-	if err != nil || rowAffected != 1 {
+	if err != nil {
 		return err
+	}
+
+	if rowAffected != 1 {
+		return errors.New("there is no row with that id")
 	}
 
 	return nil
