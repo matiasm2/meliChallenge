@@ -50,5 +50,21 @@ func (s *ItemService) CreateItem(i *models.Item) error {
 
 // DeleteItem ...
 func (s *ItemService) DeleteItem(id string) error {
+	stmt, err := s.DB.Prepare(`DELETE FROM items WHERE id= ?; values(?)`)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	rowAffected, err := res.RowsAffected()
+	if err != nil || rowAffected != 1 {
+		return err
+	}
+
 	return nil
 }
