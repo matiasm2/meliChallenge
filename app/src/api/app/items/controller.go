@@ -26,6 +26,22 @@ func GetItem(c *gin.Context) {
 	return
 }
 
+// GetItems ...
+func GetItems(c *gin.Context) {
+
+	items, err := Is.Items()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_error", "description": err.Error()})
+		return
+	}
+	if items == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_error", "description": "there are no rows"})
+		return
+	}
+	c.JSON(200, items)
+	return
+}
+
 // PostItem ...
 func PostItem(c *gin.Context) {
 	i := &models.Item{}
@@ -57,3 +73,5 @@ func DeleteItem(c *gin.Context) {
 	c.JSON(200, gin.H{"msg": "The row was deleted"})
 	return
 }
+
+

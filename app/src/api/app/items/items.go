@@ -19,5 +19,5 @@ func Configure(r *gin.Engine, db *sql.DB) {
 	r.GET("/item/:id", GetItem)
 	r.POST("/item", PostItem)
 	r.DELETE("/item/:id", DeleteItem)
-	r.GET("/item", nil)
+	r.GET("/item", GetItems)
 }

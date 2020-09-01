@@ -23,7 +23,27 @@ func (s *ItemService) Item(id string) (*models.Item, error) {
 
 // Items ...
 func (s *ItemService) Items() ([]*models.Item, error) {
-	return nil, nil
+	var items []*models.Item
+	rows, err := s.DB.Query(`SELECT id, name, description FROM items`)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+				var id string
+				var name string
+				var description string
+        if err := rows.Scan(&id, &name, &description); err != nil {
+            return nil, err
+				}
+				var item = models.Item{ID: id, Name: name, Description: description}
+        items = append(items, &item)
+    }
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+	return items, nil
 }
 
 // CreateItem ...
