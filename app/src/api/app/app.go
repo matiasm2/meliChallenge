@@ -3,9 +3,9 @@ package app
 import (
 	"api/app/items"
 	"database/sql"
+	"fmt"
 	"os"
 	"time"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	// Needed to mysql
@@ -29,17 +29,31 @@ func StartApp() {
 }
 
 func configDataBase() *sql.DB {
-	os.Remove("./foo.db")
-	//db, err := sql.Open("sqlite3", "./foo.db")
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8", "user", "userpwd", "db", "db"))
+	MYSQLUSER := os.Getenv("MYSQL_USER")
+	MYSQLPASSWORD := os.Getenv("MYSQL_PASSWORD")
+	MYSQLDB := os.Getenv("MYSQL_DATABASE")
+	DBHOST := "db"
+
+	fmt.Printf("%s:%s@tcp(%s)/%s?charset=utf8",
+		MYSQLUSER,
+		MYSQLPASSWORD,
+		DBHOST,
+		MYSQLDB)
+
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8",
+		MYSQLUSER,
+		MYSQLPASSWORD,
+		DBHOST,
+		MYSQLDB))
 	if err != nil {
 		panic("Could not connect to the db")
-	} 
+	}
 
 	for {
 		err := db.Ping()
 		if err != nil {
-			time.Sleep(1*time.Second)
+			fmt.Println(err)
+			time.Sleep(1 * time.Second)
 			continue
 		}
 		// This is bad practice... You should create a schema.sql with all the definitions
@@ -51,13 +65,13 @@ func configDataBase() *sql.DB {
 
 func createTable(db *sql.DB) {
 	// create table if not exists
-	sql_table := `
+	sqlTable := `
 	CREATE TABLE IF NOT EXISTS items(
 		id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
 		name TEXT,
 		description TEXT
 	);`
-	_, err := db.Exec(sql_table)
+	_, err := db.Exec(sqlTable)
 	if err != nil {
 		panic(err)
 	}
