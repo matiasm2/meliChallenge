@@ -2,7 +2,7 @@ package items
 
 import (
 	"net/http"
-	"strings"
+	"strconv"
 
 	"api/app/models"
 
@@ -11,8 +11,8 @@ import (
 
 // GetItem ...
 func GetItem(c *gin.Context) {
-	itemID := strings.TrimSpace(c.Param("id"))
-	if itemID == "" {
+	itemID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id_error"})
 		return
 	}
@@ -59,14 +59,14 @@ func PostItem(c *gin.Context) {
 
 // DeleteItem ...
 func DeleteItem(c *gin.Context) {
-	itemID := strings.TrimSpace(c.Param("id"))
-	if itemID == "" {
+	itemID, err := strconv.Atoi(c.Param("id"))
+	if err != nil{
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id_error"})
 		return
 	}
 
-	err := Is.DeleteItem(itemID)
-	if err != nil {
+	errr := Is.DeleteItem(itemID)
+	if errr != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "save_error", "description": err.Error()})
 		return
 	}

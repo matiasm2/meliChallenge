@@ -13,7 +13,7 @@ type ItemService struct {
 }
 
 // Item ...
-func (s *ItemService) Item(id string) (*models.Item, error) {
+func (s *ItemService) Item(id int) (*models.Item, error) {
 	var i models.Item
 	row := s.DB.QueryRow(`SELECT id, name, description FROM items WHERE id = ?`, id)
 	if err := row.Scan(&i.ID, &i.Name, &i.Description); err != nil {
@@ -70,7 +70,7 @@ func (s *ItemService) CreateItem(i *models.Item) error {
 }
 
 // DeleteItem ...
-func (s *ItemService) DeleteItem(id string) error {
+func (s *ItemService) DeleteItem(id int) error {
 	stmt, err := s.DB.Prepare(`DELETE FROM items WHERE id= ?`)
 	if err != nil {
 		return err
