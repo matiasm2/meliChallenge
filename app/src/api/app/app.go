@@ -50,23 +50,7 @@ func configDataBase() *sql.DB {
 			time.Sleep(1 * time.Second)
 			continue
 		}
-		// This is bad practice... You should create a schema.sql with all the definitions
-		createTable(db)
 		return db
 	}
 
-}
-
-func createTable(db *sql.DB) {
-	// create table if not exists
-	sqlTable := `
-	CREATE TABLE IF NOT EXISTS items(
-		id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-		name TEXT,
-		description TEXT
-	);`
-	_, err := db.Exec(sqlTable)
-	if err != nil {
-		panic(err)
-	}
 }

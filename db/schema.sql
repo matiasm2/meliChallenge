@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS items(
+		id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		name TEXT,
+		description TEXT
+	);
+	
